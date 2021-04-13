@@ -8,23 +8,24 @@ using TMPro;
 public class Ship : MonoBehaviour
 {
     [SerializeField]
-    float fuel; // fuel quantity
-
+        float fuel; // fuel quantity
+    [SerializeField]
+        TextMeshProUGUI FuelQ; // FuelTank text display
     float FuelBurnedThrust = 10f; // fuel spent on thrust
     float FuelBurnedTorque = 5f; // fuel spent on torque
 
     [SerializeField]
-        TextMeshProUGUI FuelQ; // FuelTank text display
-    [SerializeField]
         float MaxVelocity = 2f; // serialized max velocity for impact
     [SerializeField]
         float MaxRotationPos = 20f; // serialized max rotation for impact
+
     [SerializeField]
         GameObject Explosion; // explosion animation
     [SerializeField]
         Image RightArrow; // right directional arrow
     [SerializeField]
         Image LeftArrow; // left directional arrow
+
     [SerializeField]
         Image DownArrow; // down directional arrow
     [SerializeField]
@@ -33,6 +34,7 @@ public class Ship : MonoBehaviour
         Image YellowLight; // yellow light -> landing off-target or empty fuel
     [SerializeField]
         Image GreenLight; // green light -> landing successful
+
     [SerializeField]
         float ThrustForce = 100f; // Thrust -> propuslive force of a jet or engine
     [SerializeField]
@@ -50,12 +52,10 @@ public class Ship : MonoBehaviour
     {
         FuelQ.text = ("Fuel: " + fuel);
 
-        float X = Random.Range(-5, -2);
+        float X = Random.Range(-8, -2);
 
         if (Random.Range(0f, 1f) > 0.5) // ship can't spawn directly over the platform
-        {
-            X = Mathf.Abs(Random.Range(-5, -2)); // Ship has equal change of spawning on either sides of the platform
-        }
+        {   X = Mathf.Abs(Random.Range(-8, -2));    }
 
         Vector2 PositionAux = transform.position;
         PositionAux.x = X;
@@ -70,26 +70,21 @@ public class Ship : MonoBehaviour
 
     public void Update()
     {
-        if(changescene == true)
+        if(changescene == true) // scene must change
         {
             time += Time.deltaTime;
             if (time > 2f) // scene changes  after 2 Sec
             {
                 if (GameOver == true)
-                {
-                    time = 0f;
+                {   time = 0f;
                     changescene = false;
-                    SceneManager.LoadScene("GameOver");
-                }
+                    SceneManager.LoadScene("GameOver"); }
                 else
-                {
-                time = 0f;
-                changescene = false;
-                SceneManager.LoadScene("Win");
-                }
+                {   time = 0f;
+                    changescene = false;
+                    SceneManager.LoadScene("Win");  }
             }      
         }
-
 
         if (ShipDisabled == false) // player has no control over the ship after landing
         {
@@ -103,21 +98,15 @@ public class Ship : MonoBehaviour
                 ArrowColor(image,A);
 
                 if (fuel > 0)
-                {
-                    fuel -= FuelBurnedThrust*Time.deltaTime;
-                    FuelQ.text = ("Fuel: " + fuel.ToString("0"));
-                }
+                {   fuel -= FuelBurnedThrust*Time.deltaTime;
+                    FuelQ.text = ("Fuel: " + fuel.ToString("0"));   }
                 else
-                {
-                    EmptyFuelTank();
-                }
+                {   EmptyFuelTank();    }
 
             } else
-            {
-                Image image = DownArrow.GetComponent<Image>(); // <DownArrow> opacity = 0.2
+            {   Image image = DownArrow.GetComponent<Image>(); // <DownArrow> opacity = 0.2
                 float A = 0.2f;
-                ArrowColor(image, A);
-            }
+                ArrowColor(image, A);   }
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
@@ -128,21 +117,15 @@ public class Ship : MonoBehaviour
                 ArrowColor(image,A);
 
                 if (fuel > 0)
-                {
-                    fuel -= FuelBurnedTorque * Time.deltaTime;
-                    FuelQ.text = ("Fuel: " + fuel.ToString("0"));
-                }
+                {   fuel -= FuelBurnedTorque * Time.deltaTime;
+                    FuelQ.text = ("Fuel: " + fuel.ToString("0"));   }
                 else
-                {
-                    EmptyFuelTank();
-                }
+                {   EmptyFuelTank();    }
 
             } else
-            {
-                Image image = RightArrow.GetComponent<Image>(); // <RightArrow> opacity = 0.2
+            {   Image image = RightArrow.GetComponent<Image>(); // <RightArrow> opacity = 0.2
                 float A = 0.2f;
-                ArrowColor(image, A);
-            }
+                ArrowColor(image, A);   }
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
@@ -153,22 +136,14 @@ public class Ship : MonoBehaviour
                 ArrowColor(image,A);
 
                 if (fuel > 0)
-                {
-                    fuel -= FuelBurnedTorque * Time.deltaTime;
-                    FuelQ.text = ("Fuel: " + fuel.ToString("0"));
-                }
+                {   fuel -= FuelBurnedTorque * Time.deltaTime;
+                    FuelQ.text = ("Fuel: " + fuel.ToString("0"));   }
                 else
-                {
-                    EmptyFuelTank();
-                }
-
-
+                {   EmptyFuelTank();    }
             } else
-            {
-                Image image = LeftArrow.GetComponent<Image>(); // <LefttArrow> opacity = 0.2
+            {   Image image = LeftArrow.GetComponent<Image>(); // <LefttArrow> opacity = 0.2
                 float A = 0.2f;
-                ArrowColor(image, A);
-            }
+                ArrowColor(image, A);   }
         }
     }
 
@@ -177,15 +152,17 @@ public class Ship : MonoBehaviour
     {
         float MaxRotationNeg = 360f - MaxRotationPos; // negative rotation is calculated for positive value (ex: -20º = 340º)
 
-        if (ShipDisabled == false) // outcome is evaluated on the first impact
+        if (ShipDisabled == false) // outcome is calculated on first impact
         {
-            if (collision.gameObject.tag == "Platform") // Landing on platform
+            if (collision.gameObject.tag == "Platform") // Landing on the platform
             {
                 if (collision.relativeVelocity.magnitude > MaxVelocity ||                                                                           // set max velocity
                     (Mathf.Abs(transform.localEulerAngles.z) > MaxRotationPos)&& (Mathf.Abs(transform.localEulerAngles.z) < MaxRotationNeg) ||      // set max positive rotation
                     (Mathf.Abs(transform.localEulerAngles.z) < MaxRotationNeg) && (Mathf.Abs(transform.localEulerAngles.z) > MaxRotationPos))       // set max negative rotation
                 {
-                    Image light = RedLight.GetComponent<Image>(); // RedLight is displayed (opacity 1)
+                    // Ship exploded
+
+                    Image light = RedLight.GetComponent<Image>(); // Red Light 
                     float A = 1f;
                     Light(light,A);     
                 
@@ -195,9 +172,9 @@ public class Ship : MonoBehaviour
                     changescene = true;
                     Update();
                 }
-                else
+                else   // Ship landed
                 {
-                    Image light = GreenLight.GetComponent<Image>(); // GreenLight is displayed (opacity 1)
+                    Image light = GreenLight.GetComponent<Image>(); // Green Light 
                     float A = 1f;
                     Light(light, A);
 
@@ -207,12 +184,14 @@ public class Ship : MonoBehaviour
                     Update();
                 }
             }
-            else if (collision.gameObject.tag == "moon")// Landing off platform
+            else if (collision.gameObject.tag == "moon")// Landing on the moon
             {
                 if (collision.relativeVelocity.magnitude > MaxVelocity ||
                     (Mathf.Abs(transform.localEulerAngles.z) > MaxRotationPos) && (Mathf.Abs(transform.localEulerAngles.z) < MaxRotationNeg) ||
                     (Mathf.Abs(transform.localEulerAngles.z) < MaxRotationNeg) && (Mathf.Abs(transform.localEulerAngles.z) > MaxRotationPos))
                 {
+                    // Ship exploded
+
                     Image light = RedLight.GetComponent<Image>();
                     float A = 1f;
                     Light(light, A);
@@ -223,7 +202,7 @@ public class Ship : MonoBehaviour
                     changescene = true;
                     Update();
                 }
-                else
+                else   // Ship landed
                 {
                     Image light = YellowLight.GetComponent<Image>();
                     float A = 1f;
@@ -236,18 +215,16 @@ public class Ship : MonoBehaviour
                 }
             }
         }
-
-
     }
 
-    public void ArrowColor(Image image, float A)
+    public void ArrowColor(Image image, float A) // changes arrow colors
     {
         Color c = image.color;
         c.a = A;
         image.color = c;
     }
 
-    public void Light(Image light, float A)
+    public void Light(Image light, float A) // changes lights colors
     {
         Color c = light.color;
         c.a = A;
@@ -266,7 +243,7 @@ public class Ship : MonoBehaviour
         }
     }
 
-    public void EmptyFuelTank()
+    public void EmptyFuelTank() // fuel = 0
     {
         Image light = YellowLight.GetComponent<Image>();
         float A = 1f;
